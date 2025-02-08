@@ -58,6 +58,7 @@ app.get("/login", async (req, res) => {
         const usuario = await LoginUsuario(correo, contrasena);
         res.status(200).json(usuario);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Error al intentar logearte" });
     }
 });
