@@ -102,7 +102,7 @@ return rows;
 // Procedimientos para Usuarios//////////////////////////////////////////////////////////////////////////////////////////////
 export async function LoginUsuario(correo, contrasena) {
   const [rows] = await pool.query(
-    'call Login(?,?)',
+    'call LoginUsuario(?,?)',
     [correo, contrasena]
 );
 return rows;
