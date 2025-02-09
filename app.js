@@ -21,7 +21,7 @@ import {
     obtenerCitasUsuario,
     obtenerCitaUnica,
     cancelarCita,
-    LoginUsuario
+    Login
 } from "./database.js";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -55,7 +55,7 @@ app.get("/usuarios/:id", async (req, res) => {
 app.get("/login", async (req, res) => {
     const { correo, contrasena } = req.query;
     try {
-        const usuario = await LoginUsuario(correo, contrasena);
+        const usuario = await Login(correo, contrasena);
         res.status(200).json(usuario);
     } catch (error) {
         console.error(error);
