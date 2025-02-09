@@ -52,9 +52,10 @@ app.get("/usuarios/:id", async (req, res) => {
     }
 });
 
-app.get("/login", async (req, res) => {
+app.post("/login", async (req, res) => {
     const { correo, contrasena } = req.body;
-    console.log(correo, contrasena)
+    console.log(correo, contrasena);
+    
     try {
         const usuario = await Login(correo, contrasena);
         res.status(200).json(usuario);
@@ -63,9 +64,6 @@ app.get("/login", async (req, res) => {
         res.status(500).json({ error: "Error al intentar logearte" });
     }
 });
-
-
-
 
 
 //Empresas --------------------------------------------------
