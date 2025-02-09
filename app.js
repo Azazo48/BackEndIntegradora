@@ -53,7 +53,7 @@ app.get("/usuarios/:id", async (req, res) => {
 });
 
 app.get("/login", async (req, res) => {
-    const { correo, contrasena } = req.query;
+    const { correo, contrasena } = req.body;
     console.log(correo, contrasena)
     try {
         const usuario = await Login(correo, contrasena);
