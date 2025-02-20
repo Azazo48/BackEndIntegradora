@@ -301,7 +301,7 @@ app.post("/citas", async (req, res) => {
     const { empresa, usuario, servicio, fecha, hora } = req.body;
 
     try {
-        await crearCita({ empresa, usuario, servicio, fecha, hora });
+        await crearCita( empresa, usuario, servicio, fecha, hora );
         res.status(201).json({ message: "Cita creada exitosamente." });
     } catch (error) {
         res.status(500).json({ error: "No se pudo crear la cita." });
