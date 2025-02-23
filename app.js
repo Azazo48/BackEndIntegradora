@@ -240,11 +240,11 @@ app.get("/servicios/:id", async (req, res) => {
 
 app.put("/servicios/:id", async (req, res) => {
     const { id } = req.params;
-    const { empresa, nombre, descripcion, precio } = req.body;
+    const { empresa, nombre, descripcion, precio, duracion } = req.body;
 
     console.log("ID recibido:", id);
     console.log("Datos recibidos:", req.body);
-    
+
     try {
         await actualizarServicio( Number(id), empresa, nombre, descripcion, precio, duracion );
         res.status(200).json({ message: "Servicio actualizado exitosamente." });
