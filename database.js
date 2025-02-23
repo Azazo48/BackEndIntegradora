@@ -91,10 +91,10 @@ return rows;
 }
 
 // Procedimientos para Servicios
-export async function agregarServicio(empresa, nombre, descripcion, precio) {
+export async function agregarServicio(empresa, nombre, descripcion, precio, duracion) {
   const [rows] = await pool.query(
-    'CALL AgregarServicio(?, ?, ?, ?)',
-    [empresa, nombre, descripcion, precio]
+    'CALL AgregarServicio(?, ?, ?, ?, ?)',
+    [empresa, nombre, descripcion, precio, duracion]
 );
 return rows;
 }
@@ -122,10 +122,10 @@ export async function obtenerServicioEspecifico(servicio_id) {
 return rows;
 }
 
-export async function actualizarServicio(servicio_id, empresa, nombre, descripcion, precio) {
+export async function actualizarServicio(servicio_id, empresa, nombre, descripcion, precio, duracion) {
   const [rows] = await pool.query(
-    'CALL ActualizarServicio(?, ?, ?, ?, ?)',
-    [servicio_id, empresa, nombre, descripcion, precio]
+    'CALL ActualizarServicio(?, ?, ?, ?, ?, ?)',
+    [servicio_id, empresa, nombre, descripcion, precio, duracion]
 );
 return rows;
 }

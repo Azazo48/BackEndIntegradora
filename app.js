@@ -243,7 +243,7 @@ app.put("/servicios/:id", async (req, res) => {
     const { empresa, nombre, descripcion, precio } = req.body;
 
     try {
-        await actualizarServicio({ id: Number(id), empresa, nombre, descripcion, precio });
+        await actualizarServicio( Number(id), empresa, nombre, descripcion, precio, duracion );
         res.status(200).json({ message: "Servicio actualizado exitosamente." });
     } catch (error) {
         res.status(500).json({ error: "No se pudo actualizar el servicio." });
