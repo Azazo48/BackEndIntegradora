@@ -19,7 +19,7 @@ export async function ModificarEstadoEmpresa(empresaid, nuevoestado) {
 return rows;
 }
 
-export async function ModificarSuscripcion(empresaid, nuevoestado) {
+export async function ModificarAdmicion(empresaid, nuevoestado) {
   const [rows] = await pool.query(
     'CALL ModificarAdmicion(?, ?)',
     [empresaid, nuevoestado]
@@ -27,7 +27,7 @@ export async function ModificarSuscripcion(empresaid, nuevoestado) {
 return rows;
 }
 
-export async function ModificarAdmicion(empresaid, nuevoestado) {
+export async function ModificarSuscripcion(empresaid, nuevoestado) {
   const [rows] = await pool.query(
     'CALL ModificarSuscripcion(?, ?)',
     [empresaid, nuevoestado]
