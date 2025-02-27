@@ -197,10 +197,10 @@ app.delete("/empresas/:id", async (req, res) => {
 
 //Servicios --------------------------------------
 app.post("/servicios", async (req, res) => {
-    const { empresa, nombre, descripcion, precio } = req.body;
+    const { empresa, nombre, descripcion, precio, duracion } = req.body;
 
     try {
-        await agregarServicio({ empresa, nombre, descripcion, precio });
+        await agregarServicio({ empresa, nombre, descripcion, precio, duracion });
         res.status(201).json({ message: "Servicio agregado exitosamente." });
     } catch (error) {
         res.status(500).json({ error: "No se pudo agregar el servicio." });
