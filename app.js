@@ -1,6 +1,7 @@
 import express from "express";
 import {
     agregarEmpresa,
+    ObtenerEmpresasSuscripciones,
     obtenerEmpresas,
     verEmpresaUnica,
     actualizarEmpresa,
@@ -86,6 +87,15 @@ app.get("/empresasactivadas", async (req, res) => {
         res.status(200).json(empresas);
     } catch (error) {
         res.status(500).json({ error: "No se pudieron obtener las empresas act" });
+    }
+});
+
+app.get("/empresassuscripciones", async (req, res) => {
+    try {
+        const empresas = await ObtenerEmpresasSuscripciones();
+        res.status(200).json(empresas);
+    } catch (error) {
+        res.status(500).json({ error: "No se pudieron obtener las empresas" });
     }
 });
 
