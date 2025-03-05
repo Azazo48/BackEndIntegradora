@@ -154,6 +154,14 @@ export async function Login(correo, contrasena) {
 return rows;
 }
 
+export async function Logins(correo, contrasena) {
+  const [rows] = await pool.query(
+    'call LoginUsuario(?,?)',
+    [correo, contrasena]
+);
+return rows;
+}
+
 export async function crearUsuario(nombre, apellido, correo, contrasena, telefono) {
   const [rows] = await pool.query(
     'CALL CrearUsuario(?,?,?,?,?)',

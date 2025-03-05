@@ -23,6 +23,7 @@ import {
     obtenerCitaUnica,
     cancelarCita,
     Login,
+    Logins,
     obtenerEmpresasNoAdmitidas,
     ObtenerEmpresasActivas,
     ModificarAdmicion,
@@ -142,6 +143,19 @@ app.post("/login", async (req, res) => {
     
     try {
         const usuario = await Login(correo, contrasena);
+        res.status(200).json(usuario);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al intentar logearte" });
+    }
+});
+
+app.post("/logins", async (req, res) => {
+    const { correo, contrasena } = req.body;
+    console.log(correo, contrasena);
+    
+    try {
+        const usuario = await Logins(correo, contrasena);
         res.status(200).json(usuario);
     } catch (error) {
         console.error(error);
