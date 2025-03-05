@@ -33,6 +33,9 @@ import {
 import bodyParser from "body-parser";
 import cors from "cors";
 
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
@@ -119,7 +122,8 @@ app.post("/usuariosc", async (req, res) => {
     console.log(req.body);
     const { nombre, apellido, correo, contrasena, telefono } = req.body;
     try {
-        await crearUsuario(nombre, apellido, correo, contrasena, telefono);
+        const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+        await crearUsuario(nombre, apellido, correo, hashedPassword, telefono);
         res.status(201).json({ message: "Usuario creado exitosamente." });
     } catch (error) {
         console.error(error);
@@ -137,12 +141,15 @@ app.get("/usuarios/:id", async (req, res) => {
     }
 });
 
+
 app.post("/login", async (req, res) => {
     const { correo, contrasena } = req.body;
     console.log(correo, contrasena);
-    
     try {
-        const usuario = await Login(correo, contrasena);
+        const usuario = await Login(correo);
+        if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
+            return res.status(401).json({ error: "Error al intentar logearte" });
+        }
         res.status(200).json(usuario);
     } catch (error) {
         console.error(error);
@@ -153,9 +160,11 @@ app.post("/login", async (req, res) => {
 app.post("/logins", async (req, res) => {
     const { correo, contrasena } = req.body;
     console.log(correo, contrasena);
-    
     try {
-        const usuario = await Logins(correo, contrasena);
+        const usuario = await Logins(correo);
+        if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
+            return res.status(401).json({ error: "Error al intentar logearte" });
+        }
         res.status(200).json(usuario);
     } catch (error) {
         console.error(error);
@@ -164,17 +173,19 @@ app.post("/logins", async (req, res) => {
 });
 
 
+
 //Empresas --------------------------------------------------
 app.post("/empresas", async (req, res) => {
     const { nombre, rfc, direccion, correoEmpresa, correoAdmin, telefono, contrasena, imagen } = req.body;
     try {
-        await agregarEmpresa( nombre, rfc, direccion, correoEmpresa, correoAdmin, telefono, contrasena, imagen );
+        const hashedPassword = await bcrypt.hash(contrasena, saltRounds);
+        await agregarEmpresa(nombre, rfc, direccion, correoEmpresa, correoAdmin, telefono, hashedPassword, imagen);
         res.status(201).json({ message: "Empresa agregada exitosamente." });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "No se pudo agregar la empresa." });
     }
 });
-
 
 app.get("/empresas", async (req, res) => {
     try {
@@ -187,7 +198,6 @@ app.get("/empresas", async (req, res) => {
 
 app.get("/empresas/:id", async (req, res) => {
     const { id } = req.params;
-
     try {
         const empresa = await verEmpresaUnica(Number(id));
         res.status(200).json(empresa);
@@ -199,7 +209,6 @@ app.get("/empresas/:id", async (req, res) => {
 app.put("/empresas/:id", async (req, res) => {
     const { id } = req.params;
     const { nombre, rfc, direccion, correo, correo_admin, telefono, contrasena, imagen } = req.body;
-
     try {
         await actualizarEmpresa({ id: Number(id), nombre, rfc, direccion, correo, correo_admin, telefono, contrasena, imagen });
         res.status(200).json({ message: "Empresa actualizada exitosamente." });
