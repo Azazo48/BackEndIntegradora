@@ -162,18 +162,24 @@ app.post("/login", async (req, res) => {
 
 app.post("/logins", async (req, res) => {
     const { correo, contrasena } = req.body;
-    console.log(correo, contrasena);
+    console.log("Correo recibido:", correo);
+    console.log("Contraseña recibida:", contrasena);
     try {
-        const usuario = await Logins(correo);
-        if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
-            return res.status(401).json({ error: "Error al intentar logearte" });
+        const usuario = await Logins(correo, contrasena);
+        if (!usuario) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+        const match = await bcrypt.compare(contrasena, usuario.contrasena);
+        if (!match) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
         res.status(200).json(usuario);
     } catch (error) {
-        console.error(error);
+        console.error("Error en login:", error);
         res.status(500).json({ error: "Error al intentar logearte" });
     }
 });
+
 
 
 
