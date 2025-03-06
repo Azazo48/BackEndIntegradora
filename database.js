@@ -16,6 +16,13 @@ export async function Logins(correo) {
   return rows; // Devuelve las filas completas
 }
 
+export async function Login(correo, contrasena) {
+  const [rows] = await pool.query(
+      'CALL Login(?, ?)', // Llamar al procedimiento almacenado
+      [correo, contrasena]
+  );
+  return rows; // Devolver el resultado de la consulta
+}
 
 export async function ModificarEstadoEmpresa(empresaid, nuevoestado) {
   const [rows] = await pool.query(
@@ -152,13 +159,7 @@ return rows;
 }
 
 // Procedimientos para Usuarios//////////////////////////////////////////////////////////////////////////////////////////////
-export async function Login(correo, contrasena) {
-  const [rows] = await pool.query(
-    'call Login(?,?)',
-    [correo, contrasena]
-);
-return rows;
-}
+
 
 
 
@@ -166,9 +167,10 @@ export async function crearUsuario(nombre, apellido, correo, contrasena, telefon
   const [rows] = await pool.query(
     'CALL CrearUsuario(?,?,?,?,?)',
     [nombre, apellido, correo, contrasena, telefono]
-);
-return rows;
+  );
+  return rows; // Devolvemos las filas que devuelve el procedimiento almacenado
 }
+
 
 export async function obtenerUsuarios() {
   const [rows] = await pool.query(
