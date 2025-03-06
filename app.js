@@ -50,13 +50,13 @@ app.post("/logins", async (req, res) => {
     console.log("Contraseña recibida:", contrasena);
     try {
         const [rows] = await Logins(correo, contrasena);
-        const usuario = rows[0][0]; 
-        console.log("Usuario encontrado:", usuario);
-        if (!usuario) {
+        console.log("Rows obtenidos:", rows);
+        if (!rows || rows.length === 0) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
-        const match = await bcrypt.compare(contrasena, usuario.contrasena);
-        if (!match) {
+        const usuario = rows[0];
+        console.log("Usuario encontrado:", usuario);
+        if (!usuario || !usuario.contrasena) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
         res.status(200).json({ id: usuario.id, tipo: usuario.tipo });
@@ -65,6 +65,7 @@ app.post("/logins", async (req, res) => {
         res.status(500).json({ error: "Error al intentar logearte" });
     }
 });
+
 
 
 
