@@ -91,6 +91,7 @@ app.post("/login", async (req, res) => {
     try {
         // Llamamos al procedimiento almacenado para obtener el id y tipo
         const rows = await Login(correo, contrasena);
+        console.log("Resultado de Login:", rows);
 
         // Verificamos si el usuario o empresa existe
         if (rows && rows[0] && rows[0].id) {
@@ -140,6 +141,7 @@ app.post("/login", async (req, res) => {
         res.status(500).json({ error: "Error al intentar logearte" });
     }
 });
+
 
 
 
