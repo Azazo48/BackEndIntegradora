@@ -100,14 +100,32 @@ app.post("/login", async (req, res) => {
             // Verificamos si es un usuario y comparamos la contraseña
             if (usuario.tipo === "usuario") {
                 const usuarioDB = await pool.query("SELECT * FROM usuarios WHERE id = ?", [usuario.id]);
-                if (usuarioDB.length === 0 || !(await bcrypt.compare(contrasena, usuarioDB[0].contrasena))) {
+                console.log("usuarioDB:", usuarioDB);
+                if (usuarioDB.length === 0) {
+                    return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+                }
+                const match = await bcrypt.compare(contrasena, usuarioDB[0].contrasena);
+                console.log("Contraseña encriptada en DB:", usuarioDB[0].contrasena);
+                console.log("Contraseña recibida para comparar:", contrasena);
+                console.log("Contraseña coincidente:", match);
+
+                if (!match) {
                     return res.status(401).json({ error: "Correo o contraseña incorrectos" });
                 }
             } 
             // Verificamos si es una empresa y comparamos la contraseña
             else if (usuario.tipo === "empresa") {
                 const empresaDB = await pool.query("SELECT * FROM empresas WHERE id = ?", [usuario.id]);
-                if (empresaDB.length === 0 || !(await bcrypt.compare(contrasena, empresaDB[0].contrasena))) {
+                console.log("empresaDB:", empresaDB);
+                if (empresaDB.length === 0) {
+                    return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+                }
+                const match = await bcrypt.compare(contrasena, empresaDB[0].contrasena);
+                console.log("Contraseña encriptada en DB (empresa):", empresaDB[0].contrasena);
+                console.log("Contraseña recibida para comparar (empresa):", contrasena);
+                console.log("Contraseña coincidente (empresa):", match);
+
+                if (!match) {
                     return res.status(401).json({ error: "Correo o contraseña incorrectos" });
                 }
             }
@@ -122,6 +140,7 @@ app.post("/login", async (req, res) => {
         res.status(500).json({ error: "Error al intentar logearte" });
     }
 });
+
 
 
 
