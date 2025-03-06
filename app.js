@@ -84,40 +84,49 @@ app.post("/logins", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    const { correo, contrasena } = req.body;
+    const { correo, contrasena } = req.body; // Recibimos correo y contraseña desde el cuerpo de la solicitud
     console.log("Correo recibido:", correo);
     console.log("Contraseña recibida:", contrasena);
 
     try {
-        // Primero, buscamos el usuario o empresa con el correo proporcionado
-        let rows = await pool.query("SELECT id, tipo, contrasena FROM usuarios WHERE correo = ?", [correo]);
-        
-        // Si no encontramos el usuario, buscamos en la tabla de empresas
-        if (rows.length === 0) {
-            rows = await pool.query("SELECT id, tipo, contrasena FROM empresas WHERE correo = ?", [correo]);
-        }
+        // Llamamos a la función Logins para obtener el usuario
+        const rows = await Logins(correo);
 
-        // Verificamos si encontramos un usuario o empresa
-        if (rows.length === 0) {
+        console.log("Rows obtenidos:", rows); // Verifica el resultado
+
+        // Si no hay filas o si el usuario no es encontrado
+        if (!rows || rows.length === 0) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
 
-        const usuarioDB = rows[0]; // Usuario o empresa encontrado
-        console.log("Usuario/empresa encontrado:", usuarioDB);
+        // El primer conjunto de filas contiene el usuario
+        const usuario = rows[0];
 
-        // Comparamos las contraseñas usando bcrypt
-        const match = await bcrypt.compare(contrasena, usuarioDB.contrasena);
+        console.log("Usuario encontrado:", usuario);
 
+        // Si no se encontró el usuario o no tiene la propiedad 'contrasena'
+        if (!usuario || !usuario.contrasena) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        // Compara la contraseña proporcionada con la contraseña hasheada en la base de datos
+        const match = await bcrypt.compare(contrasena, usuario.contrasena);
         if (!match) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
 
-        // Si las contraseñas coinciden, devolvemos los datos del usuario o empresa
-        res.status(200).json(usuarioDB); // Puedes devolver los datos que necesites (id, tipo, etc.)
+        // Si las contraseñas coinciden, devolvemos los datos del usuario
+        res.status(200).json({ id: usuario.id, tipo: usuario.tipo }); // Datos del usuario
+
     } catch (error) {
-        console.error("Error en el login:", error);
+        console.error("Error en login:", error);
         res.status(500).json({ error: "Error al intentar logearte" });
     }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
 });
 
 
