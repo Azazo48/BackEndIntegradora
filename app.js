@@ -44,6 +44,29 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
+app.post("/logins", async (req, res) => {
+    const { correo, contrasena } = req.body;
+    console.log("Correo recibido:", correo);
+    console.log("Contraseña recibida:", contrasena);
+    try {
+        const [rows] = await Logins(correo, contrasena);
+        const usuario = rows[0][0]; 
+        console.log("Usuario encontrado:", usuario);
+        if (!usuario) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+        const match = await bcrypt.compare(contrasena, usuario.contrasena);
+        if (!match) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+        res.status(200).json({ id: usuario.id, tipo: usuario.tipo });
+    } catch (error) {
+        console.error("Error en login:", error);
+        res.status(500).json({ error: "Error al intentar logearte" });
+    }
+});
+
+
 
 //-----------------------------------------------------------------------------------14/02/2025
 
@@ -160,27 +183,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.post("/logins", async (req, res) => {
-    const { correo, contrasena } = req.body;
-    console.log("Correo recibido:", correo);
-    console.log("Contraseña recibida:", contrasena);
-    try {
-        const [rows] = await connection.query("CALL LoginUsuario(?)", [correo]);
-        const usuario = rows[0][0];
-        console.log("Usuario encontrado:", usuario);
-        if (!usuario || !usuario.contrasena) {
-            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-        }
-        const match = await bcrypt.compare(contrasena, usuario.contrasena);
-        if (!match) {
-            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-        }
-        res.status(200).json({ id: usuario.id, tipo: usuario.tipo });
-    } catch (error) {
-        console.error("Error en login:", error);
-        res.status(500).json({ error: "Error al intentar logearte" });
-    }
-});
+
 
 
 //Empresas --------------------------------------------------
