@@ -96,8 +96,17 @@ app.post("/login", async (req, res) => {
             const usuario = rows[0];
             console.log("Usuario encontrado:", usuario);
 
-            if (!usuario || !(await bcrypt.compare(contrasena, usuario.contrasena))) {
-                return res.status(401).json({ error: "Error al intentar logearte" });
+            // Ahora comparamos la contraseña hasheada
+            if (usuario.tipo === "usuario") {
+                const usuarioDB = await pool.query("SELECT * FROM usuarios WHERE id = ?", [usuario.id]);
+                if (usuarioDB.length === 0 || !(await bcrypt.compare(contrasena, usuarioDB[0].contrasena))) {
+                    return res.status(401).json({ error: "Error al intentar logearte" });
+                }
+            } else if (usuario.tipo === "empresa") {
+                const empresaDB = await pool.query("SELECT * FROM empresas WHERE id = ?", [usuario.id]);
+                if (empresaDB.length === 0 || !(await bcrypt.compare(contrasena, empresaDB[0].contrasena))) {
+                    return res.status(401).json({ error: "Error al intentar logearte" });
+                }
             }
 
             res.status(200).json(usuario); // Devolvemos los datos del usuario al frontend
