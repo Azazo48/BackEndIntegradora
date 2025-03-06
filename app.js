@@ -43,6 +43,47 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+app.post("/login", async (req, res) => {
+    const { correo, contrasena } = req.body; // Recibimos correo y contraseña desde el cuerpo de la solicitud
+    console.log("Correo recibido:", correo);
+    console.log("Contraseña recibida:", contrasena);
+
+    try {
+        // Llamamos a la función Login para obtener el usuario (usa la función definida en database.js)
+        const rows = await Login(correo, contrasena); // Cambié Logins a Login
+
+        console.log("Rows obtenidos:", rows); // Verifica el resultado
+
+        // Si no hay filas o si el usuario no es encontrado
+        if (!rows || rows.length === 0) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        // El primer conjunto de filas contiene el usuario
+        const usuario = rows[0];
+
+        console.log("Usuario encontrado:", usuario);
+
+        // Si no se encontró el usuario o no tiene la propiedad 'contrasena'
+        if (!usuario || !usuario.contrasena) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        // Compara la contraseña proporcionada con la contraseña hasheada en la base de datos
+        const match = await bcrypt.compare(contrasena, usuario.contrasena);
+        if (!match) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        // Si las contraseñas coinciden, devolvemos los datos del usuario
+        res.status(200).json({ id: usuario.id, tipo: usuario.tipo }); // Datos del usuario
+
+    } catch (error) {
+        console.error("Error en login:", error);
+        res.status(500).json({ error: "Error al intentar logearte" });
+    }
+});
+
 
 app.post("/logins", async (req, res) => {
     const { correo, contrasena } = req.body;
@@ -83,51 +124,7 @@ app.post("/logins", async (req, res) => {
     }
 });
 
-app.post("/login", async (req, res) => {
-    const { correo, contrasena } = req.body; // Recibimos correo y contraseña desde el cuerpo de la solicitud
-    console.log("Correo recibido:", correo);
-    console.log("Contraseña recibida:", contrasena);
 
-    try {
-        // Llamamos a la función Logins para obtener el usuario
-        const rows = await Logins(correo);
-
-        console.log("Rows obtenidos:", rows); // Verifica el resultado
-
-        // Si no hay filas o si el usuario no es encontrado
-        if (!rows || rows.length === 0) {
-            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-        }
-
-        // El primer conjunto de filas contiene el usuario
-        const usuario = rows[0];
-
-        console.log("Usuario encontrado:", usuario);
-
-        // Si no se encontró el usuario o no tiene la propiedad 'contrasena'
-        if (!usuario || !usuario.contrasena) {
-            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-        }
-
-        // Compara la contraseña proporcionada con la contraseña hasheada en la base de datos
-        const match = await bcrypt.compare(contrasena, usuario.contrasena);
-        if (!match) {
-            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-        }
-
-        // Si las contraseñas coinciden, devolvemos los datos del usuario
-        res.status(200).json({ id: usuario.id, tipo: usuario.tipo }); // Datos del usuario
-
-    } catch (error) {
-        console.error("Error en login:", error);
-        res.status(500).json({ error: "Error al intentar logearte" });
-    }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
-});
 
 
 

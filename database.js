@@ -10,12 +10,6 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
 }).promise();
 
-export async function Logins(correo) {
-  const [rows] = await pool.query("CALL LoginUsuario(?)", [correo]);
-  console.log("Resultado de la consulta:", rows); // Verifica el resultado
-  return rows; // Devuelve las filas completas
-}
-
 export async function Login(correo, contrasena) {
   const [rows] = await pool.query(
       'CALL Login(?, ?)', // Llamar al procedimiento almacenado
@@ -23,6 +17,14 @@ export async function Login(correo, contrasena) {
   );
   return rows; // Devolver el resultado de la consulta
 }
+
+
+export async function Logins(correo) {
+  const [rows] = await pool.query("CALL LoginUsuario(?)", [correo]);
+  console.log("Resultado de la consulta:", rows); // Verifica el resultado
+  return rows; // Devuelve las filas completas
+}
+
 
 export async function ModificarEstadoEmpresa(empresaid, nuevoestado) {
   const [rows] = await pool.query(
