@@ -32,8 +32,10 @@ import {
 } from "./database.js";
 import bodyParser from "body-parser";
 import cors from "cors";
+import bcrypt from "bcrypt";
 
-const bcrypt = require("bcrypt");
+
+
 const saltRounds = 10;
 
 const app = express();
