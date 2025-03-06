@@ -89,58 +89,37 @@ app.post("/login", async (req, res) => {
     console.log("Contraseña recibida:", contrasena);
 
     try {
-        // Llamamos al procedimiento almacenado para obtener el id y tipo
-        const rows = await Login(correo, contrasena);
-        console.log("Resultado de Login:", rows);
+        // Primero, buscamos el usuario o empresa con el correo proporcionado
+        let rows = await pool.query("SELECT id, tipo, contrasena FROM usuarios WHERE correo = ?", [correo]);
+        
+        // Si no encontramos el usuario, buscamos en la tabla de empresas
+        if (rows.length === 0) {
+            rows = await pool.query("SELECT id, tipo, contrasena FROM empresas WHERE correo = ?", [correo]);
+        }
 
-        // Verificamos si el usuario o empresa existe
-        if (rows && rows[0] && rows[0].id) {
-            const usuario = rows[0]; // Obtén los datos del usuario/empresa
-            console.log("Usuario encontrado:", usuario);
-
-            // Verificamos si es un usuario y comparamos la contraseña
-            if (usuario.tipo === "usuario") {
-                const usuarioDB = await pool.query("SELECT * FROM usuarios WHERE id = ?", [usuario.id]);
-                console.log("usuarioDB:", usuarioDB);
-                if (usuarioDB.length === 0) {
-                    return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-                }
-                const match = await bcrypt.compare(contrasena, usuarioDB[0].contrasena);
-                console.log("Contraseña encriptada en DB:", usuarioDB[0].contrasena);
-                console.log("Contraseña recibida para comparar:", contrasena);
-                console.log("Contraseña coincidente:", match);
-
-                if (!match) {
-                    return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-                }
-            } 
-            // Verificamos si es una empresa y comparamos la contraseña
-            else if (usuario.tipo === "empresa") {
-                const empresaDB = await pool.query("SELECT * FROM empresas WHERE id = ?", [usuario.id]);
-                console.log("empresaDB:", empresaDB);
-                if (empresaDB.length === 0) {
-                    return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-                }
-                const match = await bcrypt.compare(contrasena, empresaDB[0].contrasena);
-                console.log("Contraseña encriptada en DB (empresa):", empresaDB[0].contrasena);
-                console.log("Contraseña recibida para comparar (empresa):", contrasena);
-                console.log("Contraseña coincidente (empresa):", match);
-
-                if (!match) {
-                    return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-                }
-            }
-
-            // Si las contraseñas coinciden, devolvemos los datos del usuario
-            res.status(200).json(usuario); // Devolvemos los datos del usuario al frontend
-        } else {
+        // Verificamos si encontramos un usuario o empresa
+        if (rows.length === 0) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
+
+        const usuarioDB = rows[0]; // Usuario o empresa encontrado
+        console.log("Usuario/empresa encontrado:", usuarioDB);
+
+        // Comparamos las contraseñas usando bcrypt
+        const match = await bcrypt.compare(contrasena, usuarioDB.contrasena);
+
+        if (!match) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        // Si las contraseñas coinciden, devolvemos los datos del usuario o empresa
+        res.status(200).json(usuarioDB); // Puedes devolver los datos que necesites (id, tipo, etc.)
     } catch (error) {
         console.error("Error en el login:", error);
         res.status(500).json({ error: "Error al intentar logearte" });
     }
 });
+
 
 
 
