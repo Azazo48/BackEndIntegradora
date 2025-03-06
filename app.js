@@ -165,22 +165,22 @@ app.post("/logins", async (req, res) => {
     console.log("Correo recibido:", correo);
     console.log("Contraseña recibida:", contrasena);
     try {
-        const usuario = await Logins(correo, contrasena);
-        if (!usuario) {
+        const [rows] = await connection.query("CALL LoginUsuario(?)", [correo]);
+        const usuario = rows[0][0];
+        console.log("Usuario encontrado:", usuario);
+        if (!usuario || !usuario.contrasena) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
         const match = await bcrypt.compare(contrasena, usuario.contrasena);
         if (!match) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
-        res.status(200).json(usuario);
+        res.status(200).json({ id: usuario.id, tipo: usuario.tipo });
     } catch (error) {
         console.error("Error en login:", error);
         res.status(500).json({ error: "Error al intentar logearte" });
     }
 });
-
-
 
 
 //Empresas --------------------------------------------------
