@@ -10,12 +10,10 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
 }).promise();
 
-export async function Logins(correo, contrasena) {
-  const [rows] = await pool.query(
-    'call LoginUsuario(?,?)',
-    [correo, contrasena]
-);
-return rows;
+export async function Logins(correo) {
+  const [rows] = await pool.query("CALL LoginUsuario(?)", [correo]);
+  console.log("Resultado de la consulta:", rows); // Verifica el resultado
+  return rows; // Devuelve las filas completas
 }
 
 
