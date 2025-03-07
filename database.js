@@ -10,19 +10,19 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
 }).promise();
 
-export async function Login(correo, contrasena) {
+export async function Login(correo) {
   const [rows] = await pool.query(
-      'CALL Login(?, ?)', // Llamar al procedimiento almacenado
-      [correo, contrasena]
+      'CALL Login(?)',
+      [correo]
   );
-  return rows; // Devolver el resultado de la consulta
+  return rows;
 }
 
 
 export async function Logins(correo) {
   const [rows] = await pool.query("CALL LoginUsuario(?)", [correo]);
-  console.log("Resultado de la consulta:", rows); // Verifica el resultado
-  return rows; // Devuelve las filas completas
+  console.log("Resultado de la consulta:", rows);
+  return rows;
 }
 
 

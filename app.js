@@ -44,14 +44,39 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.post("/login", async (req, res) => {
-    const { correo, contrasena } = req.body; // Recibimos correo y contraseña desde el cuerpo de la solicitud
+    const { correo, contrasena } = req.body;
     console.log("Correo recibido:", correo);
     console.log("Contraseña recibida:", contrasena);
 
     try {
-        const rows = await Login(correo, contrasena);
-        console.log("Rows obtenidos:", rows[0][0]);
-        console.log("Rows obtenidos:", rows[0]);
+        const rows = await Login(correo);
+        const usuario = rows[0][0];
+
+        if (!usuario || !usuario.id) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        // Comparar la contraseña encriptada con bcrypt
+        const match = await bcrypt.compare(contrasena, usuario.contrasena);
+        if (!match) {
+            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+        }
+
+        res.status(200).json({ id: usuario.id, tipo: usuario.tipo });
+    } catch (error) {
+        console.error("Error en login:", error);
+        res.status(500).json({ error: "Error al intentar logearte" });
+    }
+});
+
+
+
+app.post("/logins", async (req, res) => {
+    const { correo, contrasena } = req.body;
+    console.log("Correo recibido:", correo);
+    console.log("Contraseña recibida:", contrasena);
+    try {
+        const [rows] = await Logins(correo);
         console.log("Rows obtenidos:", rows);
         if (!rows || rows.length === 0) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
@@ -61,45 +86,6 @@ app.post("/login", async (req, res) => {
         if (!usuario || !usuario.contrasena) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
-        const match = await bcrypt.compare(contrasena, usuario.contrasena);
-        if (!match) {
-            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-        }
-        res.status(200).json({ id: usuario.id, tipo: usuario.tipo });
-    } catch (error) {
-        console.error("Error en login:", error);
-        res.status(500).json({ error: "Error al intentar logearte" });
-    }
-});
-
-
-app.post("/logins", async (req, res) => {
-    const { correo, contrasena } = req.body;
-    console.log("Correo recibido:", correo);
-    console.log("Contraseña recibida:", contrasena);
-
-    try {
-        // Llamamos al procedimiento almacenado para obtener los datos del usuario
-        const [rows] = await Logins(correo);
-
-        console.log("Rows obtenidos:", rows); // Verifica el resultado
-
-        // Si no hay filas o si el usuario no es encontrado
-        if (!rows || rows.length === 0) {
-            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-        }
-
-        // El primer conjunto de filas contiene el usuario
-        const usuario = rows[0];
-
-        console.log("Usuario encontrado:", usuario);
-
-        // Si no se encontró el usuario o no tiene la propiedad 'contrasena'
-        if (!usuario || !usuario.contrasena) {
-            return res.status(401).json({ error: "Correo o contraseña incorrectos" });
-        }
-
-        // Compara la contraseña con bcrypt
         const match = await bcrypt.compare(contrasena, usuario.contrasena);
         if (!match) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
