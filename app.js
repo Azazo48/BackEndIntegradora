@@ -28,7 +28,15 @@ import {
     ObtenerEmpresasActivas,
     ModificarAdmicion,
     ModificarSuscripcion,
-    ModificarEstadoEmpresa
+    ModificarEstadoEmpresa,
+    insertarImagenEmpresa,
+    obtenerImagenEmpresa,
+    actualizarImagenEmpresa,
+    eliminarImagenEmpresa,
+    insertarImagenServicio,
+    obtenerImagenServicio,
+    actualizarImagenServicio,
+    eliminarImagenServicio,
 } from "./database.js";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -42,6 +50,129 @@ const saltRounds = 10;
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+// Rutas para Imágenes de Empresas
+app.post("/empresas/:id/imagen", async (req, res) => {
+    const { id } = req.params;
+    const { imagen } = req.body;
+    try {
+        await insertarImagenEmpresa(id, imagen);
+        res.status(200).json({ mensaje: "Imagen insertada correctamente." });
+    } catch (error) {
+        res.status(500).json({ error: "Error al insertar la imagen." });
+    }
+});
+
+app.get("/empresas/:id/imagen", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const imagen = await obtenerImagenEmpresa(id);
+        res.status(200).json({ imagen });
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener la imagen." });
+    }
+});
+
+app.put("/empresas/:id/imagen", async (req, res) => {
+    const { id } = req.params;
+    const { imagen } = req.body;
+    try {
+        await actualizarImagenEmpresa(id, imagen);
+        res.status(200).json({ mensaje: "Imagen actualizada correctamente." });
+    } catch (error) {
+        res.status(500).json({ error: "Error al actualizar la imagen." });
+    }
+});
+
+app.delete("/empresas/:id/imagen", async (req, res) => {
+    const { id } = req.params;
+    try {
+        await eliminarImagenEmpresa(id);
+        res.status(200).json({ mensaje: "Imagen eliminada correctamente." });
+    } catch (error) {
+        res.status(500).json({ error: "Error al eliminar la imagen." });
+    }
+});
+
+  // Rutas para Imágenes de Servicios
+app.post("/servicios/:id/imagen", async (req, res) => {
+    const { id } = req.params;
+    const { imagen } = req.body;
+    try {
+        await insertarImagenServicio(id, imagen);
+        res.status(200).json({ mensaje: "Imagen insertada correctamente." });
+    } catch (error) {
+        res.status(500).json({ error: "Error al insertar la imagen." });
+    }
+});
+
+app.get("/servicios/:id/imagen", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const imagen = await obtenerImagenServicio(id);
+        res.status(200).json({ imagen });
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener la imagen." });
+    }
+});
+
+app.put("/servicios/:id/imagen", async (req, res) => {
+    const { id } = req.params;
+    const { imagen } = req.body;
+    try {
+        await actualizarImagenServicio(id, imagen);
+        res.status(200).json({ mensaje: "Imagen actualizada correctamente." });
+    } catch (error) {
+        res.status(500).json({ error: "Error al actualizar la imagen." });
+    }
+});
+
+app.delete("/servicios/:id/imagen", async (req, res) => {
+    const { id } = req.params;
+    try {
+        await eliminarImagenServicio(id);
+        res.status(200).json({ mensaje: "Imagen eliminada correctamente." });
+    } catch (error) {
+        res.status(500).json({ error: "Error al eliminar la imagen." });
+    }
+});
+
+
+
+
+
+
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
 
 app.post("/login", async (req, res) => {
     const { correo, contrasena } = req.body;

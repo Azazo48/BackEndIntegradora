@@ -1,6 +1,7 @@
 import mysql from "mysql2";
 import dotenv from "dotenv";
 
+
 dotenv.config();
 
 const pool = mysql.createPool({
@@ -9,6 +10,132 @@ const pool = mysql.createPool({
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
 }).promise();
+
+
+
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------
+
+/*
+import { storage } from "../firebaseConfig";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
+
+const selectImage = async () => {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== "granted") {
+    alert("Se requiere permiso para acceder a la galería.");
+    return;
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: true,
+    quality: 1,
+  });
+
+  if (!result.canceled && result.assets.length > 0) {
+    const imageUri = result.assets[0].uri;
+    setSelectedImage({ uri: imageUri });
+    await uploadImageToFirebase(imageUri);
+  }
+};
+
+const uploadImageToFirebase = async (imageUri) => {
+  try {
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+    const imageName = `empresas/${Date.now()}.jpg`;
+    const imageRef = ref(storage, imageName);
+
+    await uploadBytes(imageRef, blob);
+    const imageUrl = await getDownloadURL(imageRef);
+
+    console.log("Imagen subida:", imageUrl);
+    await saveImageUrlToDatabase(imageUrl);
+  } catch (error) {
+    console.error("Error al subir imagen:", error);
+  }
+};
+
+const saveImageUrlToDatabase = async (imageUrl) => {
+  try {
+    const storedEmpresaId = await AsyncStorage.getItem("empresaId");
+    if (!storedEmpresaId) return;
+
+    const response = await fetch("https://solobackendintegradora.onrender.com/empresas/imagen", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ empresaId: storedEmpresaId, imagen: imageUrl }),
+    });
+
+    const result = await response.json();
+    console.log("URL guardada en MySQL:", result);
+  } catch (error) {
+    console.error("Error al guardar la URL en MySQL:", error);
+  }
+};
+*/
+
+
+
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+async function insertarImagenEmpresa(id, imagen) {
+  return await query("CALL InsertarImagenEmpresa(?, ?)", [id, imagen]);
+}
+
+async function obtenerImagenEmpresa(id) {
+  const result = await query("CALL ObtenerImagenEmpresa(?)", [id]);
+  return result.length > 0 ? result[0].imagen : null;
+}
+
+async function actualizarImagenEmpresa(id, imagen) {
+  return await query("CALL ActualizarImagenEmpresa(?, ?)", [id, imagen]);
+}
+
+async function eliminarImagenEmpresa(id) {
+  return await query("CALL EliminarImagenEmpresa(?)", [id]);
+}
+
+// Procedimientos para Imágenes de Servicios
+async function insertarImagenServicio(id, imagen) {
+  return await query("CALL InsertarImagenServicio(?, ?)", [id, imagen]);
+}
+
+async function obtenerImagenServicio(id) {
+  const result = await query("CALL ObtenerImagenServicio(?)", [id]);
+  return result.length > 0 ? result[0].imagen : null;
+}
+
+async function actualizarImagenServicio(id, imagen) {
+  return await query("CALL ActualizarImagenServicio(?, ?)", [id, imagen]);
+}
+
+async function eliminarImagenServicio(id) {
+  return await query("CALL EliminarImagenServicio(?)", [id]);
+}
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------
+
+
+
 
 export async function Login(correo) {
   const [rows] = await pool.query(
