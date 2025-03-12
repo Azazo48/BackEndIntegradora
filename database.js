@@ -91,38 +91,38 @@ const saveImageUrlToDatabase = async (imageUrl) => {
 
 
 
-async function insertarImagenEmpresa(id, imagen) {
+export async function insertarImagenEmpresa(id, imagen) {
   return await query("CALL InsertarImagenEmpresa(?, ?)", [id, imagen]);
 }
 
-async function obtenerImagenEmpresa(id) {
+export async function obtenerImagenEmpresa(id) {
   const result = await query("CALL ObtenerImagenEmpresa(?)", [id]);
   return result.length > 0 ? result[0].imagen : null;
 }
 
-async function actualizarImagenEmpresa(id, imagen) {
+export async function actualizarImagenEmpresa(id, imagen) {
   return await query("CALL ActualizarImagenEmpresa(?, ?)", [id, imagen]);
 }
 
-async function eliminarImagenEmpresa(id) {
+export async function eliminarImagenEmpresa(id) {
   return await query("CALL EliminarImagenEmpresa(?)", [id]);
 }
 
 // Procedimientos para Imágenes de Servicios
-async function insertarImagenServicio(id, imagen) {
+export async function insertarImagenServicio(id, imagen) {
   return await query("CALL InsertarImagenServicio(?, ?)", [id, imagen]);
 }
 
-async function obtenerImagenServicio(id) {
+export async function obtenerImagenServicio(id) {
   const result = await query("CALL ObtenerImagenServicio(?)", [id]);
   return result.length > 0 ? result[0].imagen : null;
 }
 
-async function actualizarImagenServicio(id, imagen) {
+export async function actualizarImagenServicio(id, imagen) {
   return await query("CALL ActualizarImagenServicio(?, ?)", [id, imagen]);
 }
 
-async function eliminarImagenServicio(id) {
+export async function eliminarImagenServicio(id) {
   return await query("CALL EliminarImagenServicio(?)", [id]);
 }
 
