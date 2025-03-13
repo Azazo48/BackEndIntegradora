@@ -40,45 +40,26 @@ import {
 } from "./database.js";
 import bodyParser from "body-parser";
 import cors from "cors";
-
+import multer from 'multer';
 import bcrypt from "bcryptjs";
 
-
-
 const saltRounds = 10;
-
 const app = express();
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 app.use(bodyParser.json());
 app.use(cors());
 
 
-
-
-
-
-
-
-
-
-//-------------------------------------------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
 // Rutas para Imágenes de Empresas
-app.post("/empresas/:id/imagen", async (req, res) => {
+app.post("/empresas/:id/imagen", upload.single('imagen'), async (req, res) => {
     const { id } = req.params;
-    const { imagen } = req.body;
+    const imagen = req.file.buffer; // Se toma el archivo cargado
     try {
         await insertarImagenEmpresa(id, imagen);
         res.status(200).json({ mensaje: "Imagen insertada correctamente." });
     } catch (error) {
+        console.error("Error al insertar la imagen:", error);  // Agregar logs detallados
         res.status(500).json({ error: "Error al insertar la imagen." });
     }
 });
@@ -93,9 +74,9 @@ app.get("/empresas/:id/imagen", async (req, res) => {
     }
 });
 
-app.put("/empresas/:id/imagen", async (req, res) => {
+app.put("/empresas/:id/imagen", upload.single('imagen'), async (req, res) => {
     const { id } = req.params;
-    const { imagen } = req.body;
+    const imagen = req.file.buffer;
     try {
         await actualizarImagenEmpresa(id, imagen);
         res.status(200).json({ mensaje: "Imagen actualizada correctamente." });
@@ -114,10 +95,10 @@ app.delete("/empresas/:id/imagen", async (req, res) => {
     }
 });
 
-  // Rutas para Imágenes de Servicios
-app.post("/servicios/:id/imagen", async (req, res) => {
+// Rutas para Imágenes de Servicios
+app.post("/servicios/:id/imagen", upload.single('imagen'), async (req, res) => {
     const { id } = req.params;
-    const { imagen } = req.body;
+    const imagen = req.file.buffer;
     try {
         await insertarImagenServicio(id, imagen);
         res.status(200).json({ mensaje: "Imagen insertada correctamente." });
@@ -136,9 +117,9 @@ app.get("/servicios/:id/imagen", async (req, res) => {
     }
 });
 
-app.put("/servicios/:id/imagen", async (req, res) => {
+app.put("/servicios/:id/imagen", upload.single('imagen'), async (req, res) => {
     const { id } = req.params;
-    const { imagen } = req.body;
+    const imagen = req.file.buffer;
     try {
         await actualizarImagenServicio(id, imagen);
         res.status(200).json({ mensaje: "Imagen actualizada correctamente." });
@@ -156,7 +137,6 @@ app.delete("/servicios/:id/imagen", async (req, res) => {
         res.status(500).json({ error: "Error al eliminar la imagen." });
     }
 });
-
 
 
 

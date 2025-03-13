@@ -2,13 +2,13 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/storage";
 
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: ""
+  apiKey: process.env.APIKEY_FIRE,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT,
+  storageBucket: process.env.BUCKET,
+  messagingSenderId: process.env.SENDER,
+  appId: process.env.APPID,
+  measurementId: process.env.MEASUREMENT
 };
 git 
 if (!firebase.apps.length) {
