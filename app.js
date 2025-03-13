@@ -64,17 +64,24 @@ const upload = multer({
 
 // Rutas para Imágenes de Empresas
 app.post("/empresas/:id/imagen", upload.single('imagen'), async (req, res) => {
-    console.log(req.file);  // Log para verificar el archivo recibido
+    console.log("Imagen recibida:", req.file);  // Verifica la imagen recibida
     const { id } = req.params;
-    const imagen = req.file.buffer;
-    try {
-        await insertarImagenEmpresa(id, imagen);
-        res.status(200).json({ mensaje: "Imagen insertada correctamente." });
-    } catch (error) {
-        console.error("Error al insertar la imagen:", error);
-        res.status(500).json({ error: "Error al insertar la imagen." });
+    const imagen = req.file ? req.file.buffer : null;
+    
+    if (!imagen) {
+      console.error("No se recibió una imagen válida.");
+      return res.status(400).json({ error: "No se recibió una imagen válida." });
     }
-    });
+  
+    try {
+      await insertarImagenEmpresa(id, imagen);
+      res.status(200).json({ mensaje: "Imagen insertada correctamente." });
+    } catch (error) {
+      console.error("Error al insertar la imagen:", error);  // Log del error detallado
+      res.status(500).json({ error: "Error al insertar la imagen." });
+    }
+  });
+  
     
 
 app.get("/empresas/:id/imagen", async (req, res) => {
