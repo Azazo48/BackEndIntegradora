@@ -75,7 +75,7 @@ app.post("/empresas/:id/imagen", upload.single('imagen'), async (req, res) => {
     console.log("Imagen recibida:", req.file);  // Verifica la imagen recibida
     const { id } = req.params;
     const imagen = req.file ? req.file.buffer : null;
-    
+  
     if (!imagen) {
       console.error("No se recibió una imagen válida.");
       return res.status(400).json({ error: "No se recibió una imagen válida." });
