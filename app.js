@@ -47,7 +47,15 @@ const saltRounds = 10;
 const app = express();
 const storage = multer.memoryStorage();
 app.use(bodyParser.json());
-app.use(cors());
+
+const corsOptions = {
+    origin: "http://localhost:8081",  // Cambia esto a la URL de tu frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  };
+  
+  app.use(cors(corsOptions));  // Aplica esta configuración
+  app.use(cors(corsOptions)); 
 
 const upload = multer({
     storage: storage,
