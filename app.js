@@ -46,9 +46,20 @@ import bcrypt from "bcryptjs";
 const saltRounds = 10;
 const app = express();
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 app.use(bodyParser.json());
 app.use(cors());
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 },  // Limitar el tamaño máximo del archivo a 5MB
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith("image/")) {
+        cb(null, true);  // Aceptar solo imágenes
+        } else {
+        cb(new Error("Solo se permiten imágenes"), false);
+        }
+    },
+    });
 
 
 // Rutas para Imágenes de Empresas
