@@ -45,132 +45,40 @@ import bcrypt from "bcryptjs";
 
 const saltRounds = 10;
 const app = express();
-const storage = multer.memoryStorage();
 app.use(bodyParser.json());
+app.use(cors()); 
+const fs = require("fs");
+const storage = multer.memoryStorage(); // Guarda la imagen en memoria como buffer
+const upload = multer({ storage: storage });
 
-const corsOptions = {
-    origin: "http://localhost:8081",  // Cambia esto a la URL de tu frontend
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  };
-  
-  app.use(cors(corsOptions));  // Aplica esta configuración
-  app.use(cors(corsOptions)); 
+app.post("/upload", upload.single("image"), (req, res) => {
+    const { buffer, mimetype } = req.file;
 
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 },  // Limitar el tamaño máximo del archivo a 5MB
-    fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith("image/")) {
-        cb(null, true);  // Aceptar solo imágenes
+    const query = "INSERT INTO imagenes (imagen, type) VALUES (?, ?)";
+    db.query(query, [buffer, mimetype], (err, result) => {
+        if (err) {
+        console.error("Error al guardar la imagen:", err);
+        res.status(500).json({ error: "Error al guardar la imagen" });
         } else {
-        cb(new Error("Solo se permiten imágenes"), false);
-        }
-    },
+        res.json({ message: "Imagen guardada correctamente", id: result.insertId });
+    }
     });
+});
 
-
-// Rutas para Imágenes de Empresas
-app.post("/empresas/:id/imagen", upload.single('imagen'), async (req, res) => {
-    console.log("Imagen recibida:", req.file);  // Verifica la imagen recibida
-    console.log("Headers:", req.headers);       // Verifica los headers de la petición
-    console.log("Body:", req.body);             // Verifica el cuerpo de la petición
+  // Ruta para obtener una imagen por ID
+app.get("/image/:id", (req, res) => {
+    const { id } = req.params;
+    const query = "SELECT image, type FROM imagenes WHERE id = ?";
     
-    const { id } = req.params;
-    const imagen = req.file ? req.file.buffer : null;
-
-    if (!imagen) {
-        console.error("No se recibió una imagen válida.");
-        return res.status(400).json({ error: "No se recibió una imagen válida." });
+    db.query(query, [id], (err, results) => {
+        if (err || results.length === 0) {
+        res.status(404).json({ error: "Imagen no encontrada" });
+        } else {
+        res.setHeader("Content-Type", results[0].type);
+        res.send(results[0].image);
     }
-
-    try {
-        await insertarImagenEmpresa(id, imagen);
-        res.status(200).json({ mensaje: "Imagen insertada correctamente." });
-    } catch (error) {
-        console.error("Error al insertar la imagen:", error);
-        res.status(500).json({ error: "Error al insertar la imagen." });
-    }
+    });
 });
-
-  
-    
-
-app.get("/empresas/:id/imagen", async (req, res) => {
-    const { id } = req.params;
-    try {
-        const imagen = await obtenerImagenEmpresa(id);
-        res.status(200).json({ imagen });
-    } catch (error) {
-        res.status(500).json({ error: "Error al obtener la imagen." });
-    }
-});
-
-app.put("/empresas/:id/imagen", upload.single('imagen'), async (req, res) => {
-    const { id } = req.params;
-    const imagen = req.file.buffer;
-    try {
-        await actualizarImagenEmpresa(id, imagen);
-        res.status(200).json({ mensaje: "Imagen actualizada correctamente." });
-    } catch (error) {
-        res.status(500).json({ error: "Error al actualizar la imagen." });
-    }
-});
-
-app.delete("/empresas/:id/imagen", async (req, res) => {
-    const { id } = req.params;
-    try {
-        await eliminarImagenEmpresa(id);
-        res.status(200).json({ mensaje: "Imagen eliminada correctamente." });
-    } catch (error) {
-        res.status(500).json({ error: "Error al eliminar la imagen." });
-    }
-});
-
-// Rutas para Imágenes de Servicios
-app.post("/servicios/:id/imagen", upload.single('imagen'), async (req, res) => {
-    const { id } = req.params;
-    const imagen = req.file.buffer;
-    try {
-        await insertarImagenServicio(id, imagen);
-        res.status(200).json({ mensaje: "Imagen insertada correctamente." });
-    } catch (error) {
-        res.status(500).json({ error: "Error al insertar la imagen." });
-    }
-});
-
-app.get("/servicios/:id/imagen", async (req, res) => {
-    const { id } = req.params;
-    try {
-        const imagen = await obtenerImagenServicio(id);
-        res.status(200).json({ imagen });
-    } catch (error) {
-        res.status(500).json({ error: "Error al obtener la imagen." });
-    }
-});
-
-app.put("/servicios/:id/imagen", upload.single('imagen'), async (req, res) => {
-    const { id } = req.params;
-    const imagen = req.file.buffer;
-    try {
-        await actualizarImagenServicio(id, imagen);
-        res.status(200).json({ mensaje: "Imagen actualizada correctamente." });
-    } catch (error) {
-        res.status(500).json({ error: "Error al actualizar la imagen." });
-    }
-});
-
-app.delete("/servicios/:id/imagen", async (req, res) => {
-    const { id } = req.params;
-    try {
-        await eliminarImagenServicio(id);
-        res.status(200).json({ mensaje: "Imagen eliminada correctamente." });
-    } catch (error) {
-        res.status(500).json({ error: "Error al eliminar la imagen." });
-    }
-});
-
-
 
 
 
