@@ -58,14 +58,19 @@ const upload = multer({ storage: storage });
 
 app.post("/upload", upload.single("image"), async (req, res) => {
     try {
-    const { buffer, mimetype } = req.file;
-    const imageId = await guardarImagen(buffer, mimetype);
-    res.json({ message: "Imagen guardada correctamente", id: imageId });
+        if (!req.file) {
+            return res.status(400).json({ error: "No se ha recibido ningún archivo" });
+        }
+
+        const { buffer, mimetype } = req.file;
+        const imageId = await guardarImagen(buffer, mimetype);
+        res.json({ message: "Imagen guardada correctamente", id: imageId });
     } catch (error) {
-    console.error("Error al guardar la imagen:", error);
-    res.status(500).json({ error: "Error al guardar la imagen" });
+        console.error("Error al guardar la imagen:", error);
+        res.status(500).json({ error: "Error al guardar la imagen" });
     }
 });
+
 
 
   // Ruta para obtener una imagen por ID
