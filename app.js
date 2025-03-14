@@ -60,13 +60,14 @@ const upload = multer({
       }
       cb(null, true);
     }
-  });
+});
   
 
 
 
-  app.post("/upload", upload.single("image"), async (req, res) => {
+app.post("/upload", upload.single("image"), async (req, res) => {
     console.log("Archivo recibido:", req.file); // Log del archivo recibido
+    console.log("Cuerpo de la solicitud:", req.body); // Log del cuerpo de la solicitud
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No se ha recibido ningún archivo" });
@@ -79,8 +80,7 @@ const upload = multer({
       console.error("Error al guardar la imagen:", error);
       res.status(500).json({ error: "Error al guardar la imagen" });
     }
-  });
-  
+});
 
 
   // Ruta para obtener una imagen por ID
