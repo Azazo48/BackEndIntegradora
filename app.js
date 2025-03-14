@@ -36,6 +36,8 @@ import {
     obtenerImagenServicio,
     actualizarImagenServicio,
     eliminarImagenServicio,
+    guardarImagen,
+    obtenerImagenPorId
 } from "./database.js";
 
 import express from "express";
