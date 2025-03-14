@@ -52,25 +52,35 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors()); 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-
-
-app.post("/upload", upload.single("image"), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ error: "No se ha recibido ningún archivo" });
-        }
-
-        const { buffer, mimetype } = req.file;
-        const imageId = await guardarImagen(buffer, mimetype);
-        res.json({ message: "Imagen guardada correctamente", id: imageId });
-    } catch (error) {
-        console.error("Error al guardar la imagen:", error);
-        res.status(500).json({ error: "Error al guardar la imagen" });
+const upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+      if (!file.mimetype.startsWith('image/')) {
+        return cb(new Error('Solo se permiten imágenes'), false);
+      }
+      cb(null, true);
     }
-});
+  });
+  
 
+
+
+  app.post("/upload", upload.single("image"), async (req, res) => {
+    console.log("Archivo recibido:", req.file); // Log del archivo recibido
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No se ha recibido ningún archivo" });
+      }
+  
+      const { buffer, mimetype } = req.file;
+      const imageId = await guardarImagen(buffer, mimetype);
+      res.json({ message: "Imagen guardada correctamente", id: imageId });
+    } catch (error) {
+      console.error("Error al guardar la imagen:", error);
+      res.status(500).json({ error: "Error al guardar la imagen" });
+    }
+  });
+  
 
 
   // Ruta para obtener una imagen por ID
