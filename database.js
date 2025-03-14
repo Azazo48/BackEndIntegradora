@@ -11,13 +11,6 @@ const pool = mysql.createPool({
 }).promise();
 
 
-export async function ModificarSuscripcion(empresaid, nuevoestado) {
-  const [rows] = await pool.query("CALL ModificarSuscripcion(?, ?)", [
-    empresaid,
-    nuevoestado,
-  ]);
-  return rows;
-}
 
 // Función para guardar imagen en la base de datos
 export async function guardarImagen(imagenBuffer, tipo) {
