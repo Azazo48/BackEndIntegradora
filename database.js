@@ -11,6 +11,32 @@ const pool = mysql.createPool({
 }).promise();
 
 
+export async function ModificarSuscripcion(empresaid, nuevoestado) {
+  const [rows] = await pool.query("CALL ModificarSuscripcion(?, ?)", [
+    empresaid,
+    nuevoestado,
+  ]);
+  return rows;
+}
+
+// Función para guardar imagen en la base de datos
+export async function guardarImagen(imagenBuffer, tipo) {
+  const [result] = await pool.query(
+    "INSERT INTO imagenes (imagen, type) VALUES (?, ?)",
+    [imagenBuffer, tipo]
+  );
+  return result.insertId;
+}
+
+// Función para obtener imagen por ID
+export async function obtenerImagenPorId(id) {
+  const [rows] = await pool.query(
+    "SELECT imagen, type FROM imagenes WHERE id = ?",
+    [id]
+  );
+  return rows.length > 0 ? rows[0] : null;
+}
+
 
 
 export async function insertarImagenEmpresa(id, imagen) {
