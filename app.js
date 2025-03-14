@@ -49,36 +49,38 @@ const saltRounds = 10;
 const app = express();
 app.use(bodyParser.json());
 app.use(cors()); 
-const fs = require("fs");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+
+
 app.post("/upload", upload.single("image"), async (req, res) => {
     try {
-      const { buffer, mimetype } = req.file;
-      const imageId = await guardarImagen(buffer, mimetype);
-      res.json({ message: "Imagen guardada correctamente", id: imageId });
+    const { buffer, mimetype } = req.file;
+    const imageId = await guardarImagen(buffer, mimetype);
+    res.json({ message: "Imagen guardada correctamente", id: imageId });
     } catch (error) {
-      console.error("Error al guardar la imagen:", error);
-      res.status(500).json({ error: "Error al guardar la imagen" });
+    console.error("Error al guardar la imagen:", error);
+    res.status(500).json({ error: "Error al guardar la imagen" });
     }
-  });
-  
+});
+
+
   // Ruta para obtener una imagen por ID
-  app.get("/image/:id", async (req, res) => {
+app.get("/image/:id", async (req, res) => {
     try {
-      const { id } = req.params;
-      const imageData = await obtenerImagenPorId(id);
-      if (!imageData) {
+    const { id } = req.params;
+    const imageData = await obtenerImagenPorId(id);
+    if (!imageData) {
         return res.status(404).json({ error: "Imagen no encontrada" });
-      }
-      res.setHeader("Content-Type", imageData.type);
-      res.send(imageData.imagen);
-    } catch (error) {
-      console.error("Error al obtener la imagen:", error);
-      res.status(500).json({ error: "Error al obtener la imagen" });
     }
-  });
+    res.setHeader("Content-Type", imageData.type);
+    res.send(imageData.imagen);
+    } catch (error) {
+    console.error("Error al obtener la imagen:", error);
+    res.status(500).json({ error: "Error al obtener la imagen" });
+    }
+});
 
 
 
