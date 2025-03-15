@@ -28,14 +28,6 @@ import {
     ModificarAdmicion,
     ModificarSuscripcion,
     ModificarEstadoEmpresa,
-    insertarImagenEmpresa,
-    obtenerImagenEmpresa,
-    actualizarImagenEmpresa,
-    eliminarImagenEmpresa,
-    insertarImagenServicio,
-    obtenerImagenServicio,
-    actualizarImagenServicio,
-    eliminarImagenServicio,
     guardarImagen,
     obtenerImagenPorId
 } from "./database.js";
@@ -65,22 +57,25 @@ const upload = multer({
 
 
 
-app.post("/upload", upload.single("image"), async (req, res) => {
-    console.log("Archivo recibido:", req.file); // Log del archivo recibido
-    console.log("Cuerpo de la solicitud:", req.body); // Log del cuerpo de la solicitud
+app.post("/upload", async (req, res) => {
+    const { image, filename, mimetype } = req.body;
+  
     try {
-      if (!req.file) {
-        return res.status(400).json({ error: "No se ha recibido ningún archivo" });
+      if (!image) {
+        return res.status(400).json({ error: "No se ha recibido ninguna imagen" });
       }
   
-      const { buffer, mimetype } = req.file;
+      // Convertir Base64 a buffer
+      const buffer = Buffer.from(image, "base64");
+  
+      // Guardar la imagen en la base de datos
       const imageId = await guardarImagen(buffer, mimetype);
       res.json({ message: "Imagen guardada correctamente", id: imageId });
     } catch (error) {
       console.error("Error al guardar la imagen:", error);
       res.status(500).json({ error: "Error al guardar la imagen" });
     }
-});
+  });
 
 
   // Ruta para obtener una imagen por ID
