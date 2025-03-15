@@ -12,13 +12,18 @@ const pool = mysql.createPool({
 
 
 
-// Función para guardar imagen en la base de datos
 export async function guardarImagen(imagenBuffer, tipo) {
-  const [result] = await pool.query(
-    "INSERT INTO imagenes (imagen, type) VALUES (?, ?)",
-    [imagenBuffer, tipo]
-  );
-  return result.insertId;
+  try {
+    const [result] = await pool.query(
+      "INSERT INTO imagenes (imagen, type) VALUES (?, ?)",
+      [imagenBuffer, tipo]
+    );
+    console.log("Imagen insertada con ID:", result.insertId); // Verifica el ID de la imagen
+    return result.insertId;
+  } catch (error) {
+    console.error("Error al insertar la imagen en la base de datos:", error);
+    throw error;
+  }
 }
 
 // Función para obtener imagen por ID

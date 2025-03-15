@@ -53,7 +53,7 @@ const upload = multer({
 
 
 
-app.post("/upload", async (req, res) => {
+  app.post("/upload", async (req, res) => {
     const { image, filename, mimetype } = req.body;
   
     try {
@@ -63,9 +63,12 @@ app.post("/upload", async (req, res) => {
   
       // Convertir Base64 a buffer
       const buffer = Buffer.from(image, "base64");
+      console.log("Buffer creado:", buffer); // Verifica el buffer
   
       // Guardar la imagen en la base de datos
       const imageId = await guardarImagen(buffer, mimetype);
+      console.log("Imagen guardada con ID:", imageId); // Verifica el ID de la imagen
+  
       res.json({ message: "Imagen guardada correctamente", id: imageId });
     } catch (error) {
       console.error("Error al guardar la imagen:", error);
