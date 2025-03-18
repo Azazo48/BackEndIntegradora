@@ -53,21 +53,18 @@ const upload = multer({
 
 
 
-  app.post("/upload", async (req, res) => {
-    const { image, filename, mimetype } = req.body;
-  
+  app.post("/upload", upload.single('image'), async (req, res) => {
     try {
-      if (!image) {
+      if (!req.file) {
         return res.status(400).json({ error: "No se ha recibido ninguna imagen" });
       }
   
-      // Convertir Base64 a buffer
-      const buffer = Buffer.from(image, "base64");
-      console.log("Buffer creado:", buffer); // Verifica el buffer
+      const { mimetype } = req.file;
+      const buffer = req.file.buffer;  // Aquí obtenemos el buffer de la imagen subida
   
       // Guardar la imagen en la base de datos
       const imageId = await guardarImagen(buffer, mimetype);
-      console.log("Imagen guardada con ID:", imageId); // Verifica el ID de la imagen
+      console.log("Imagen guardada con ID:", imageId);
   
       res.json({ message: "Imagen guardada correctamente", id: imageId });
     } catch (error) {
@@ -75,21 +72,17 @@ const upload = multer({
       res.status(500).json({ error: "Error al guardar la imagen" });
     }
   });
+  
 
 
-  // Ruta para obtener una imagen por ID
   app.get('/imagen/:id', async (req, res) => {
     const { id } = req.params;
   
     try {
-      const imagenData = await obtenerImagenPorId(id); // Obtiene la imagen desde la base de datos
-  
+      const imagenData = await obtenerImagenPorId(id);
       if (imagenData) {
-        // Convertir el BLOB a Base64
-        const imageBase64 = imagenData.imagen.toString('base64');  // Convierte el BLOB a Base64
-  
-        // Devuelve la imagen en Base64 junto con el tipo MIME
-        res.json({ image: imageBase64, type: imagenData.tipo });
+        const imageBase64 = imagenData.imagen.toString('base64');
+        res.json({ image: imageBase64, type: imagenData.type });
       } else {
         res.status(404).send('Imagen no encontrada');
       }
