@@ -78,21 +78,27 @@ const upload = multer({
 
 
   // Ruta para obtener una imagen por ID
-app.get("/image/:id", async (req, res) => {
-    try {
+  app.get('/imagen/:id', async (req, res) => {
     const { id } = req.params;
-    const imageData = await obtenerImagenPorId(id);
-    if (!imageData) {
-        return res.status(404).json({ error: "Imagen no encontrada" });
-    }
-    res.setHeader("Content-Type", imageData.type);
-    res.send(imageData.imagen);
+  
+    try {
+      const imagenData = await obtenerImagenPorId(id); // Obtiene la imagen desde la base de datos
+  
+      if (imagenData) {
+        // Convertir el BLOB a Base64
+        const imageBase64 = imagenData.imagen.toString('base64');  // Convierte el BLOB a Base64
+  
+        // Devuelve la imagen en Base64 junto con el tipo MIME
+        res.json({ image: imageBase64, type: imagenData.tipo });
+      } else {
+        res.status(404).send('Imagen no encontrada');
+      }
     } catch (error) {
-    console.error("Error al obtener la imagen:", error);
-    res.status(500).json({ error: "Error al obtener la imagen" });
+      console.error('Error al obtener la imagen:', error);
+      res.status(500).send('Error al obtener la imagen');
     }
-});
-
+  });
+  
 
 
 

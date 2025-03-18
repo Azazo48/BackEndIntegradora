@@ -42,8 +42,10 @@ export async function obtenerImagenPorId(id) {
     "SELECT imagen, type FROM imagenes WHERE id = ?",
     [id]
   );
-  return rows.length > 0 ? rows[0] : null;
+
+  return rows.length > 0 ? rows[0] : null; // Devuelve la fila con la imagen y el tipo
 }
+
 
 
 
