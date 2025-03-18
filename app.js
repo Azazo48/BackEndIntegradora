@@ -47,51 +47,49 @@ const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     limits: {
-      fileSize: 5 * 800 * 800, // Límite de 50 MB
+      fileSize: 5 * 800 * 800,
     },
-  });
+});
 
 
 
-  app.post("/uploade/:id", async (req, res) => {
+app.post("/uploade/:id", async (req, res) => {
     try {
-      const { image, mimetype } = req.body; // Aquí tomas la imagen como base64
-      if (!image) {
+        const { image, mimetype } = req.body;
+        if (!image) {
         return res.status(400).json({ error: "No se ha recibido ninguna imagen" });
-      }
-  
-      const buffer = Buffer.from(image, 'base64'); // Convertimos el base64 a un buffer
-  
-      const { id } = req.params;
-      const imageId = await guardarImagenE(buffer, id);
-      console.log("Imagen guardada con ID:", imageId);
-  
-      res.json({ message: "Imagen guardada correctamente", id: imageId });
-    } catch (error) {
-      console.error("Error al guardar la imagen:", error);
-      res.status(500).json({ error: "Error al guardar la imagen" });
     }
-  });
-  
 
-
-  app.get('/imagene/:id', async (req, res) => {
+    const buffer = Buffer.from(image, 'base64');
     const { id } = req.params;
-  
+    const imageId = await guardarImagenE(buffer, id);
+    console.log("Imagen guardada con ID:", imageId);
+        res.json({ message: "Imagen guardada correctamente", id: imageId });
+    } catch (error) {
+        console.error("Error al guardar la imagen:", error);
+        res.status(500).json({ error: "Error al guardar la imagen" });
+    }
+});
+
+
+
+app.get('/imagene/:id', async (req, res) => {
+    const { id } = req.params;
+
     try {
-      const imagenData = await obtenerImagenPorIdE(id);
-      if (imagenData) {
+        const imagenData = await obtenerImagenPorIdE(id);
+        if (imagenData) {
         const imageBase64 = imagenData.imagen.toString('base64');
         res.json({ image: imageBase64, type: imagenData.type });
-      } else {
+        } else {
         res.status(404).send('Imagen no encontrada');
-      }
+        }
     } catch (error) {
-      console.error('Error al obtener la imagen:', error);
-      res.status(500).send('Error al obtener la imagen');
+        console.error('Error al obtener la imagen:', error);
+        res.status(500).send('Error al obtener la imagen');
     }
-  });
-  
+});
+
 
 
 

@@ -28,7 +28,7 @@ export async function guardarImagenE(imagenBuffer, id) {
       "UPDATE empresas SET imagen = ? WHERE id = ?",
       [imagenBuffer, id]
     );
-    console.log("Imagen insertada con ID:", result.insertId); // Verifica el ID de la imagen
+    console.log("Imagen insertada con ID:", result.insertId);
     return result.insertId;
   } catch (error) {
     console.error("Error al insertar la imagen en la base de datos:", error);
@@ -36,14 +36,13 @@ export async function guardarImagenE(imagenBuffer, id) {
   }
 }
 
-// Función para obtener imagen por ID
 export async function obtenerImagenPorIdE(id) {
   const [rows] = await pool.query(
     "SELECT imagen FROM empresas WHERE id = ?",
     [id]
   );
 
-  return rows.length > 0 ? rows[0] : null; // Devuelve la fila con la imagen y el tipo
+  return rows.length > 0 ? rows[0] : null;
 }
 
 //-----
@@ -57,7 +56,7 @@ export async function guardarImagenS(imagenBuffer, id) {
       "UPDATE empresas SET imagen = ? WHERE id = ?;",
       [imagenBuffer, id]
     );
-    console.log("Imagen insertada con ID:", result.insertId); // Verifica el ID de la imagen
+    console.log("Imagen insertada con ID:", result.insertId); 
     return result.insertId;
   } catch (error) {
     console.error("Error al insertar la imagen en la base de datos:", error);
@@ -71,7 +70,7 @@ export async function obtenerImagenPorIdS(id) {
     [id]
   );
 
-  return rows.length > 0 ? rows[0] : null; // Devuelve la fila con la imagen y el tipo
+  return rows.length > 0 ? rows[0] : null;
 }
 
 //-----
@@ -105,7 +104,6 @@ export async function Login(correo) {
 
 export async function Logins(correo) {
   const [rows] = await pool.query("CALL LoginUsuario(?)", [correo]);
-  //console.log("Resultado de la consulta:", rows);
   return rows;
 }
 
