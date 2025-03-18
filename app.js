@@ -28,8 +28,8 @@ import {
     ModificarAdmicion,
     ModificarSuscripcion,
     ModificarEstadoEmpresa,
-    guardarImagen,
-    obtenerImagenPorId
+    guardarImagenE,
+    obtenerImagenPorIdE
 } from "./database.js";
 
 import express from "express";
@@ -53,17 +53,16 @@ const upload = multer({
 
 
 
-  app.post("/upload", upload.single('image'), async (req, res) => {
+  app.post("/uploade", upload.single('image'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: "No se ha recibido ninguna imagen" });
       }
-  
       const { mimetype } = req.file;
-      const buffer = req.file.buffer;  // Aquí obtenemos el buffer de la imagen subida
-  
-      // Guardar la imagen en la base de datos
-      const imageId = await guardarImagen(buffer, mimetype);
+      const buffer = req.file.buffer;
+      const { id } = req.body; 
+
+      const imageId = await guardarImagenE(buffer, mimetype, id);
       console.log("Imagen guardada con ID:", imageId);
   
       res.json({ message: "Imagen guardada correctamente", id: imageId });
@@ -75,11 +74,11 @@ const upload = multer({
   
 
 
-  app.get('/imagen/:id', async (req, res) => {
+  app.get('/imagene/:id', async (req, res) => {
     const { id } = req.params;
   
     try {
-      const imagenData = await obtenerImagenPorId(id);
+      const imagenData = await obtenerImagenPorIdE(id);
       if (imagenData) {
         const imageBase64 = imagenData.imagen.toString('base64');
         res.json({ image: imageBase64, type: imagenData.type });
