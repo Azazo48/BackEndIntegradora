@@ -22,11 +22,11 @@ pool.getConnection()
   });
 
 
-export async function guardarImagenE(imagenBuffer, tipo, id) {
+export async function guardarImagenE(imagenBuffer, id) {
   try {
     const [result] = await pool.query(
-      "UPDATE empresas SET imagen = ?, type = ? WHERE id = ?",
-      [imagenBuffer, tipo, id]
+      "UPDATE empresas SET imagen = ? WHERE id = ?",
+      [imagenBuffer, id]
     );
     console.log("Imagen insertada con ID:", result.insertId); // Verifica el ID de la imagen
     return result.insertId;
@@ -51,11 +51,11 @@ export async function obtenerImagenPorIdE(id) {
 //-----
 //-----
 
-export async function guardarImagenS(imagenBuffer, tipo, id) {
+export async function guardarImagenS(imagenBuffer, id) {
   try {
     const [result] = await pool.query(
-      "UPDATE empresas SET imagen = ?, type = ? WHERE id = ?;",
-      [imagenBuffer, tipo, id]
+      "UPDATE empresas SET imagen = ? WHERE id = ?;",
+      [imagenBuffer, id]
     );
     console.log("Imagen insertada con ID:", result.insertId); // Verifica el ID de la imagen
     return result.insertId;

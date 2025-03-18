@@ -62,7 +62,7 @@ const upload = multer({
       const buffer = req.file.buffer;
       const { id } = req.params;
 
-      const imageId = await guardarImagenE(buffer, mimetype, id);
+      const imageId = await guardarImagenE(buffer, id);
       console.log("Imagen guardada con ID:", imageId);
   
       res.json({ message: "Imagen guardada correctamente", id: imageId });
