@@ -12,6 +12,15 @@ const pool = mysql.createPool({
 }).promise();
 
 
+pool.getConnection()
+  .then(connection => {
+    console.log('Conexión a la base de datos exitosa');
+    connection.release();
+  })
+  .catch(error => {
+    console.error('Error al conectar a la base de datos:', error);
+  });
+
 
 export async function guardarImagen(imagenBuffer, tipo) {
   try {
@@ -177,12 +186,16 @@ return rows;
 }
 
 export async function obtenerServiciosEmpresa(empresa_id) {
-  const [rows] = await pool.query(
-    'CALL ObtenerServiciosEmpresa(?)',
-    [empresa_id]
-);
-return rows;
+  try {
+    const [rows] = await pool.query('CALL ObtenerServiciosEmpresa(?)', [empresa_id]);
+    console.log("Resultados de la consulta:", rows); // Agrega esta línea para depuración
+    return rows;
+  } catch (error) {
+    console.error("Error al obtener los servicios de la empresa:", error);
+    throw error; // Lanza el error para que Express lo capture
+  }
 }
+
 
 export async function obtenerServicioEspecifico(servicio_id) {
   const [rows] = await pool.query(
