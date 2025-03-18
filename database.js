@@ -105,7 +105,7 @@ export async function Login(correo) {
 
 export async function Logins(correo) {
   const [rows] = await pool.query("CALL LoginUsuario(?)", [correo]);
-  console.log("Resultado de la consulta:", rows);
+  //console.log("Resultado de la consulta:", rows);
   return rows;
 }
 
@@ -222,7 +222,7 @@ return rows;
 export async function obtenerServiciosEmpresa(empresa_id) {
   try {
     const [rows] = await pool.query('CALL ObtenerServiciosEmpresa(?)', [empresa_id]);
-    console.log("Resultados de la consulta:", rows); // Agrega esta línea para depuración
+    //console.log("Resultados de la consulta:", rows);
     return rows;
   } catch (error) {
     console.error("Error al obtener los servicios de la empresa:", error);
