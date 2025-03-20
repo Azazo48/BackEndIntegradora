@@ -54,14 +54,13 @@ const upload = multer({
 
 
 app.post("/uploade/:id", async (req, res) => {
+    const { id } = req.params;
     try {
-        const { image, mimetype } = req.body;
+        const { image} = req.body;
         if (!image) {
         return res.status(400).json({ error: "No se ha recibido ninguna imagen" });
     }
-
     const buffer = Buffer.from(image, 'base64');
-    const { id } = req.params;
     const imageId = await guardarImagenE(buffer, id);
     console.log("Imagen guardada con ID:", imageId);
         res.json({ message: "Imagen guardada correctamente", id: imageId });
