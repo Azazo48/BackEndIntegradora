@@ -141,7 +141,7 @@ return rows;
 
 export async function obtenerEmpresasNoAdmitidas() {
   const [rows] = await pool.query(
-    'CALL obtenerEmpresasRechazadas()'
+    'CALL obtenerEmpresasNoAdmitidas()'
 );
 return rows;
 }
