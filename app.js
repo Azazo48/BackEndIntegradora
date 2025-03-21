@@ -242,7 +242,7 @@ app.get("/empresasrechazadas", async (req, res) => {
         const empresas = await obtenerEmpresasRechazadas();
         res.status(200).json(empresas);
     } catch (error) {
-        res.status(500).json({ error: "No se pudieron obtener las empresas adm" });
+        res.status(500).json({ error: "No se pudieron obtener las empresas recha" });
     }
 });
 
