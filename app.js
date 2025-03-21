@@ -29,7 +29,8 @@ import {
     ModificarSuscripcion,
     ModificarEstadoEmpresa,
     guardarImagenE,
-    obtenerImagenPorIdE
+    obtenerImagenPorIdE,
+    obtenerEmpresasRechazadas
 } from "./database.js";
 
 import express from "express";
