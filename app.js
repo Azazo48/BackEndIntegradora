@@ -56,7 +56,7 @@ const upload = multer({
 
 
 
-app.get("/VerHorarios", async (req, res) => {
+app.post("/VerHorarios", async (req, res) => {
     try {
         const { fecha } = req.body;
         const [hora] = await VerHorarios(fecha);
