@@ -69,8 +69,8 @@ app.get("/VerHorarios", async (req, res) => {
         console.log("horarios",hora)
         console.log(horarios)
 
-        //const horas = horario.map(item => item.hora.slice(0, 5));
-        //const horariosDisponibles = horarios.filter(item => !horas.includes(item));
+        const horas = hora.map(item => item.hora.slice(0, 5));
+        const horariosDisponibles = horarios.filter(item => !horas.includes(item));
 
         console.log(horariosDisponibles)
         res.status(200).json(horariosDisponibles);
