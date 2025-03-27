@@ -30,7 +30,8 @@ import {
     ModificarEstadoEmpresa,
     guardarImagenE,
     obtenerImagenPorIdE,
-    obtenerEmpresasRechazadas
+    obtenerEmpresasRechazadas,
+    VerHorarios
 } from "./database.js";
 
 import express from "express";
@@ -54,6 +55,25 @@ const upload = multer({
 
 
 
+
+app.get("/VerHorarios", async (req, res) => {
+    try {
+        const horario = await VerHorarios();
+        const horarios = [
+            "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
+            "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+            "16:00", "16:30", "17:00", "17:30", "18:00",
+        ];
+        console.log(horario)
+        console.log(horarios)
+        res.status(200).json(horario);
+    } catch (error) {
+        res.status(500).json({ error: "No se pudieron obtener los horarios" });
+    }
+});
+
+
+
 app.post("/uploade/:id", async (req, res) => {
     const { id } = req.params;
     try {
@@ -63,7 +83,7 @@ app.post("/uploade/:id", async (req, res) => {
     }
     const buffer = Buffer.from(image, 'base64');
     const imageId = await guardarImagenE(buffer, id);
-    console.log("Imagen guardada con ID:", imageId);
+    //console.log("Imagen guardada con ID:", imageId);
         res.json({ message: "Imagen guardada correctamente", id: imageId });
     } catch (error) {
         console.error("Error al guardar la imagen:", error);
@@ -106,8 +126,8 @@ app.get('/imagene/:id', async (req, res) => {
 
 app.post("/login", async (req, res) => {
     const { correo, contrasena } = req.body;
-    console.log("Correo recibido:", correo);
-    console.log("Contraseña recibida:", contrasena);
+    //console.log("Correo recibido:", correo);
+    //console.log("Contraseña recibida:", contrasena);
 
     try {
         const rows = await Login(correo);
@@ -134,16 +154,16 @@ app.post("/login", async (req, res) => {
 
 app.post("/logins", async (req, res) => {
     const { correo, contrasena } = req.body;
-    console.log("Correo recibido:", correo);
-    console.log("Contraseña recibida:", contrasena);
+    //console.log("Correo recibido:", correo);
+    //console.log("Contraseña recibida:", contrasena);
     try {
         const [rows] = await Logins(correo);
-        console.log("Rows obtenidos:", rows);
+        //console.log("Rows obtenidos:", rows);
         if (!rows || rows.length === 0) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
         const usuario = rows[0];
-        console.log("Usuario encontrado:", usuario);
+        //console.log("Usuario encontrado:", usuario);
         if (!usuario || !usuario.contrasena) {
             return res.status(401).json({ error: "Correo o contraseña incorrectos" });
         }
@@ -174,7 +194,7 @@ app.post("/logins", async (req, res) => {
 
 app.post("/modificarestadoemp", async (req, res) => {
     const { empresaid, nuevoestado } = req.body;
-    console.log(empresaid, nuevoestado);
+    //console.log(empresaid, nuevoestado);
     
     try {
         const mod = await ModificarEstadoEmpresa(empresaid, nuevoestado);
@@ -187,7 +207,7 @@ app.post("/modificarestadoemp", async (req, res) => {
 
 app.post("/modificarsus", async (req, res) => {
     const { empresaid, nuevoestado } = req.body;
-    console.log(empresaid, nuevoestado);
+    //console.log(empresaid, nuevoestado);
     
     try {
         const mod = await ModificarSuscripcion(empresaid, nuevoestado);
@@ -200,7 +220,7 @@ app.post("/modificarsus", async (req, res) => {
 
 app.post("/modificaradm", async (req, res) => {
     const { empresaid, nuevoestado } = req.body;
-    console.log(empresaid, nuevoestado);
+    //console.log(empresaid, nuevoestado);
     
     try {
         const mod = await ModificarAdmicion(empresaid, nuevoestado);
@@ -254,7 +274,7 @@ app.get("/empresasrechazadas", async (req, res) => {
 
 app.post("/usuariosc", async (req, res) => {
     const { nombre, apellido, correo, contrasena, telefono } = req.body;
-    console.log(req.body);
+    //console.log(req.body);
 
     // Validamos que los campos no estén vacíos
     if (!nombre || !apellido || !correo || !contrasena || !telefono) {
@@ -392,8 +412,8 @@ app.put("/servicios/:id", async (req, res) => {
     const { id } = req.params;
     const { empresa, nombre, descripcion, precio, duracion } = req.body;
 
-    console.log("ID recibido:", id);
-    console.log("Datos recibidos:", req.body);
+    //console.log("ID recibido:", id);
+    //console.log("Datos recibidos:", req.body);
 
     try {
         await actualizarServicio( Number(id), empresa, nombre, descripcion, precio, duracion );

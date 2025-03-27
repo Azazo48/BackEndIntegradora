@@ -22,6 +22,12 @@ pool.getConnection()
   });
 
 
+  export async function VerHorarios(fecha) {
+    const [rows] = await pool.query("CALL VerHorarios(?)", [fecha]);
+    return rows;
+  }
+
+
 export async function guardarImagenE(imagenBuffer, id) {
   try {
     const [result] = await pool.query(
