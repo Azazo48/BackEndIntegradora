@@ -69,10 +69,10 @@ app.get("/VerHorarios", async (req, res) => {
         console.log(horario)
         console.log(horarios)
 
-        const resultado1 = horario.filter(item => !horarios.includes(item));
+        const horariosDisponibles = horarios.filter(item => !horario.includes(item));
 
-        console.log(resultado1)
-        res.status(200).json(horarios);
+        console.log(horariosDisponibles)
+        res.status(200).json(horariosDisponibles);
     } catch (error) {
         res.status(500).json({ error: "No se pudieron obtener los horarios" });
     }
