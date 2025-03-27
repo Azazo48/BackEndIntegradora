@@ -72,8 +72,7 @@ app.get("/VerHorarios", async (req, res) => {
         const horas = horario.map(item => item.hora.slice(0, 5));
         console.log(horas); // ['10:30', '12:00', '10:00', '10:00']
 
-
-        const horariosDisponibles = horarios.filter(item => !horasOcupadas.includes(item));
+        const horariosDisponibles = horarios.filter(item => !horas.includes(item));
 
         console.log(horariosDisponibles)
         res.status(200).json(horariosDisponibles);
