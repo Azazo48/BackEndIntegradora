@@ -66,13 +66,11 @@ app.get("/VerHorarios", async (req, res) => {
             "16:00", "16:30", "17:00", "17:30", "18:00",
         ];
 
-        console.log(horario)
+        console.log("horarios",horario)
         console.log(horarios)
 
-        const horas = horario.map(item => item.hora.slice(0, 5));
-        console.log(horas); // ['10:30', '12:00', '10:00', '10:00']
-
-        const horariosDisponibles = horarios.filter(item => !horas.includes(item));
+        //const horas = horario.map(item => item.hora.slice(0, 5));
+        //const horariosDisponibles = horarios.filter(item => !horas.includes(item));
 
         console.log(horariosDisponibles)
         res.status(200).json(horariosDisponibles);
