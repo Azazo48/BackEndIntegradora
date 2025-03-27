@@ -58,15 +58,16 @@ const upload = multer({
 
 app.get("/VerHorarios", async (req, res) => {
     try {
-        const horario = await VerHorarios();
+        const { fecha } = req.body;
+        const horario = await VerHorarios(fecha);
         const horarios = [
             "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
             "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
             "16:00", "16:30", "17:00", "17:30", "18:00",
         ];
-        const resultado1 = horarios.filter(item => !horario.includes(item));
         console.log(horario)
         console.log(horarios)
+        const resultado1 = horarios.filter(item => !horario.includes(item));
         console.log(resultado1)
         res.status(200).json(horario);
     } catch (error) {
