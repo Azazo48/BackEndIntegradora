@@ -67,7 +67,7 @@ app.get("/VerHorarios", async (req, res) => {
         ];
         console.log(horario)
         console.log(horarios)
-        const resultado1 = horarios.filter(item => !horario.includes(item));
+        const resultado1 = horario.filter(item => !horarios.includes(item));
         console.log(resultado1)
         res.status(200).json(horario);
     } catch (error) {
