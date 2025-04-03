@@ -31,7 +31,9 @@ import {
     guardarImagenE,
     obtenerImagenPorIdE,
     obtenerEmpresasRechazadas,
-    VerHorarios
+    VerHorarios,
+    ModificarPagoEmpresaEfe,
+    ModificarPagoEmpresaTran
 } from "./database.js";
 
 import express from "express";
@@ -51,6 +53,29 @@ const upload = multer({
     limits: {
       fileSize: 5 * 800 * 800,
     },
+});
+
+
+app.post("/modificarpagoempresaefe", async (req, res) => {
+    const { empresaid} = req.body;
+    try {
+        const mod = await ModificarPagoEmpresaEfe(empresaid);
+        res.status(200).json(mod);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al modificar el pago e" });
+    }
+});
+
+app.post("/modificarpagoempresatran", async (req, res) => {
+    const { empresaid} = req.body;
+    try {
+        const mod = await ModificarPagoEmpresaTran(empresaid);
+        res.status(200).json(mod);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Error al modificar el pago t" });
+    }
 });
 
 

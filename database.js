@@ -22,6 +22,28 @@ pool.getConnection()
   });
 
 
+  export async function ModificarPagoEmpresaTran(empresaid) {
+    const [rows] = await pool.query(
+      'CALL ModificarPagoEmpresaTran(?)',
+      [empresaid]
+  );
+  return rows;
+  }
+
+  export async function ModificarPagoEmpresaEfe(empresaid) {
+    const [rows] = await pool.query(
+      'CALL ModificarPagoEmpresaEfe(?)',
+      [empresaid]
+  );
+  return rows;
+  }
+
+
+
+
+
+  
+
   export async function VerHorarios(fecha) {
     const [rows] = await pool.query("CALL VerHorarios(?)", [fecha]);
     return rows;
