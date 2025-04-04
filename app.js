@@ -226,7 +226,7 @@ app.post("/logins", async (req, res) => {
 
 app.post("/modificarestadoemp", async (req, res) => {
     const { empresaid, nuevoestado, nuevoestadosus } = req.body;
-    //console.log(empresaid, nuevoestado);
+    console.log(empresaid, nuevoestado);
     
     try {
         const mod = await ModificarEstadoEmpresa(empresaid, nuevoestado, nuevoestadosus);
