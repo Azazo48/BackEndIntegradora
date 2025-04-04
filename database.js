@@ -136,9 +136,9 @@ export async function Logins(correo) {
 }
 
 
-export async function ModificarEstadoEmpresa(empresaid, nuevoestado) {
+export async function ModificarEstadoEmpresa(empresaid, nuevoestado, nuevoestadosus) {
   const [rows] = await pool.query(
-    'CALL ModificarEstadoEmpresa(?, ?)',
+    'CALL ModificarEstadoEmpresa(?, ?, ?)',
     [empresaid, nuevoestado]
 );
 return rows;

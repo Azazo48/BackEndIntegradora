@@ -57,7 +57,7 @@ const upload = multer({
 
 
 app.post("/modificarpagoempresaefe", async (req, res) => {
-    const { empresaid} = req.body;
+    const { empresaid } = req.body;
     try {
         const mod = await ModificarPagoEmpresaEfe(empresaid);
         res.status(200).json(mod);
@@ -68,7 +68,7 @@ app.post("/modificarpagoempresaefe", async (req, res) => {
 });
 
 app.post("/modificarpagoempresatran", async (req, res) => {
-    const { empresaid} = req.body;
+    const { empresaid } = req.body;
     try {
         const mod = await ModificarPagoEmpresaTran(empresaid);
         res.status(200).json(mod);
@@ -225,11 +225,11 @@ app.post("/logins", async (req, res) => {
 
 
 app.post("/modificarestadoemp", async (req, res) => {
-    const { empresaid, nuevoestado } = req.body;
+    const { empresaid, nuevoestado, nuevoestadosus } = req.body;
     //console.log(empresaid, nuevoestado);
     
     try {
-        const mod = await ModificarEstadoEmpresa(empresaid, nuevoestado);
+        const mod = await ModificarEstadoEmpresa(empresaid, nuevoestado, nuevoestadosus);
         res.status(200).json(mod);
     } catch (error) {
         console.error(error);
